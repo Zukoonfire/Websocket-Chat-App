@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <style>
+        #chat-box {
+            width: 400px;
+            height: 300px;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chat Application</h1>
+    <div id="chat-box"></div>
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8080/ws');
+
+        socket.addEventListener('open', function (event) {
+            console.log('WebSocket connection established');
+        });
+
+        socket.addEventListener('message', function (event) {
+            console.log('Message from server:', event.data);
+            const chatBox = document.getElementById('chat-box');
+            const message = document.createElement('div');
+            message.textContent = event.data;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+
+        socket.addEventListener('close', function(event) {
+            console.log('WebSocket connection closed');
+        });
+
+        socket.addEventListener('error', function(event) {
+            console.error('WebSocket error:', event);
+        });
+
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value.trim();
+            if (message !== '') {
+                console.log('Sending message to server:', message);
+                socket.send(message);
+                messageInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
