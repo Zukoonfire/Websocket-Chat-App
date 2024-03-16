@@ -1,0 +1,25 @@
+env: flex  # Specify the flexible environment
+
+service: chat-app  # Replace with a descriptive service name
+
+
+runtime: custom  # Use custom runtime for flexibility
+
+
+
+# Specify the Docker image you pushed to Artifact Registry
+image: asia-south2-docker.pkg.dev/tictactoe-413606/tictac-server/appenginedockerimg
+
+# Specify the port where your application listens
+env_variables:
+  PORT: "8080"
+
+# Instance scaling (optional)
+automatic_scaling:
+  # Adjust minimum and maximum instances based on your needs
+  min_instances: 1
+  max_instances: 2
+
+handlers:
+  - url: /.*
+    script: main  # Specify the main Go executable
